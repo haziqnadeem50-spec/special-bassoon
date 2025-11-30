@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Give — Donate Easily</title>
+  <style>
+    /* Minimal, clean styling for the demo page */
+    :root{--accent:#1f8ef1;--bg:#f6f9fc;--card:#fff;--muted:#6b7280}
+    html,body{height:100%;margin:0;font-family:Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;color:#0f172a;background:linear-gradient(180deg,var(--bg),#eef6ff)}
+    .container{max-width:980px;margin:48px auto;padding:24px}
+    header{display:flex;align-items:center;justify-content:space-between}
+    header h1{margin:0;font-size:20px}
+    .card{background:var(--card);border-radius:12px;padding:20px;box-shadow:0 6px 18px rgba(15,23,42,0.06)}
+    .grid{display:grid;grid-template-columns:1fr 360px;gap:20px}
+    .hero{padding:18px}
+    .lead{color:var(--muted);margin-top:6px}
+    .preset{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+    .preset button{border:1px solid #e6eef9;background:transparent;padding:10px 14px;border-radius:8px;cursor:pointer}
+    .preset button.active{background:var(--accent);color:#fff;border:none}
+    .custom-row{display:flex;gap:8px;margin-top:12px}
+    .custom-row input{flex:1;padding:10px;border-radius:8px;border:1px solid #e6eef9}
+    label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px}
+    .donate-panel{padding:18px}
+    .summary{font-size:14px;margin-bottom:12px}
+    .donate-btn{width:100%;padding:12px;border-radius:10px;border:none;background:var(--accent);color:#fff;font-weight:600;cursor:pointer}
+    .small{font-size:13px;color:var(--muted)}
+    footer{margin-top:18px;text-align:center;color:var(--muted);font-size:13px}
+    /* responsive */
+    @media (max-width:880px){.grid{grid-template-columns:1fr;}.donate-panel{order:2}}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Give — simple donations</h1>
+      <nav class="small">Secure · Transparent · Fast</nav>
+    </header>
+
+    <main style="margin-top:18px">
+      <div class="grid">
+        <section class="card hero">
+          <h2>Support a cause you care about</h2>
+          <p class="lead">Choose an amount, add your details, and give. This demo page uses a mock payment flow. Replace it with a real provider (Stripe, PayPal) when you go live.</p>
+
+          <div style="margin-top:18px">
+            <label for="name">Your name</label>
+            <input id="name" placeholder="Jane Doe" style="width:100%;padding:10px;border-radius:8px;border:1px solid #e6eef9" />
+          </div>
+
+          <div style="margin-top:12px">
+            <label for="email">Email (for receipt)</label>
+            <input id="email" placeholder="you@example.com" style="width:100%;padding:10px;border-radius:8px;border:1px solid #e6eef9" />
+          </div>
+
+          <div style="margin-top:16px">
+            <label>Choose an amount</label>
+            <div class="preset" aria-label="preset amounts">
+              <button data-amount="5">$5</button>
+              <button data-amount="10">$10</button>
+              <button data-amount="25">$25</button>
+              <button data-amount="50">$50</button>
+              <button data-amount="100">$100</button>
+            </div>
+
+            <div class="custom-row">
+              <input id="custom" type="number" min="1" placeholder="Custom amount (USD)" />
+              <button id="clearCustom" style="padding:10px;border-radius:8px;border:1px solid #e6eef9;background:#fff">Clear</button>
+            </div>
+
+            <p class="small" style="margin-top:8px">Tip: you can choose a preset or type any amount. Amounts are in USD for this demo.</p>
+          </div>
+
+          <div style="margin-top:18px">
+            <label for="note">Optional message</label>
+            <textarea id="note" placeholder="Add a short note (e.g., 'For education programs')" style="width:100%;min-height:80px;padding:10px;border-radius:8px;border:1px solid #e6eef9"></textarea>
+          </div>
+        </section>
+
+        <aside class="card donate-panel" aria-labelledby="donate-title">
+          <h3 id="donate-title">Donate</h3>
+          <div class="summary">Amount: <strong id="displayAmount">$10</strong></div>
+
+          <div style="margin-bottom:10px">
+            <label for="remember">Save my details for next time</label>
+            <div style="display:flex;align-items:center;margin-top:6px">
+              <input id="remember" type="checkbox" />
+              <label for="remember" class="small" style="margin-left:8px">I agree to save name & email (local only)</label>
+            </div>
+          </div>
+
+          <button id="donateBtn" class="donate-btn">Donate now</button>
+          <p class="small" style="margin-top:10px">This page is a demo. No real money is transferred. To accept payments live, follow the integration notes below.</p>
+
+          <div style="margin-top:14px">
+            <strong>Integration notes</strong>
+            <ul class="small" style="padding-left:18px;margin-top:8px">
+              <li>Use a server to create secure payment sessions (e.g., Stripe Checkout Sessions).</li>
+              <li>Never store secret API keys in client-side code.</li>
+              <li>Comply with local tax and receipt regulations when collecting donations.</li>
+            </ul>
+          </div>
+        </aside>
+      </div>
+
+      <footer>
+        <p>Built with ❤️ — replace the mock flow with your payment gateway when ready.</p>
+      </footer>
+    </main>
+  </div>
+
+  <script>
+    // Simple demo logic for selecting amounts + mock payment flow
+    (function(){
+      const presetButtons = document.querySelectorAll('.preset button');
+      const custom = document.getElementById('custom');
+      const clearCustom = document.getElementById('clearCustom');
+      const display = document.getElementById('displayAmount');
+      const donateBtn = document.getElementById('donateBtn');
+      const nameEl = document.getElementById('name');
+      const emailEl = document.getElementById('email');
+
+      // default amount
+      let amount = 10;
+      function setAmount(a, fromCustom=false){
+        amount = Math.max(1, Math.round(Number(a)||0));
+        display.textContent = '$' + amount;
+        // toggle active on preset buttons only when not from custom
+        presetButtons.forEach(b=> b.classList.toggle('active', Number(b.dataset.amount)===amount));
+        if(!fromCustom) custom.value = '';
+      }
+
+      presetButtons.forEach(btn=>{
+        btn.addEventListener('click', ()=> setAmount(btn.dataset.amount));
+      });
+
+      custom.addEventListener('input', ()=>{
+        if(custom.value) setAmount(custom.value, true);
+      });
+
+      clearCustom.addEventListener('click', ()=>{ custom.value=''; setAmount(10); });
+
+      // load saved details if any (local demo only)
+      try{
+        const saved = JSON.parse(localStorage.getItem('give_demo')) || {};
+        if(saved.name) nameEl.value = saved.name;
+        if(saved.email) emailEl.value = saved.email;
+      }catch(e){}
+
+      donateBtn.addEventListener('click', async ()=>{
+        const name = nameEl.value.trim();
+        const email = emailEl.value.trim();
+        if(!email || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){
+          alert('Please enter a valid email for your receipt.');
+          return;
+        }
+
+        donateBtn.disabled = true;
+        donateBtn.textContent = 'Processing...';
+
+        // MOCK: simulate contacting payment provider
+        await new Promise(r=> setTimeout(r, 1400));
+
+        // Mock success
+        donateBtn.textContent = 'Success — Thank you!';
+
+        // Save details locally if asked (demo only)
+        if(document.getElementById('remember').checked){
+          localStorage.setItem('give_demo', JSON.stringify({name, email}));
+        } else {
+          localStorage.removeItem('give_demo');
+        }
+
+        // Show confirmation popup/modal (simple)
+        setTimeout(()=>{
+          alert(`Thank you ${name || 'friend'}! We received your donation of $${amount}. A receipt was sent to ${email} (demo).`);
+          donateBtn.disabled = false;
+          donateBtn.textContent = 'Donate now';
+        }, 300);
+      });
+
+    })();
+  </script>
+</body>
+</html>
